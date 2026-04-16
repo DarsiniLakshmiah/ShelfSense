@@ -1,0 +1,60 @@
+version: 2
+
+sources:
+  - name: raw
+    database: SHELFSENSE
+    schema: RAW
+    tables:
+      - name: kroger_prices_raw
+        description: "Raw JSON payloads from Kroger Products API"
+      - name: external_signals_raw
+        description: "Raw JSON from USDA, BLS, NOAA, and Open Prices"
+      - name: kroger_store_lookup
+        description: "Kroger store metadata (name, zip, state) keyed by locationId — populated by daily DAG"
+
+models:
+  - name: stg_kroger_prices
+    description: "Typed and cleaned Kroger price records — one row per product × store × date"
+    columns:
+      - name: item_id
+        description: "Kroger product ID"
+        tests:
+          - not_null
+      - name: price_date
+        description: "Date the price was observed"
+        tests:
+          - not_null
+      - name: regular_price
+        description: "Regular shelf price"
+        tests:
+          - not_null
+
+  - name: stg_usda_commodities
+    description: "Typed USDA NASS weekly commodity price records"
+    columns:
+      - name: commodity
+        tests:
+          - not_null
+      - name: week_ending_date
+        tests:
+          - not_null
+
+  - name: stg_noaa_weather
+    description: "Typed NOAA daily weather observations with frost/heat flags"
+    columns:
+      - name: observation_date
+        tests:
+          - not_null
+      - name: station_id
+        tests:
+          - not_null
+
+  - name: stg_bls_series
+    description: "Typed BLS price and CPI series records (monthly)"
+    columns:
+      - name: series_id
+        tests:
+          - not_null
+      - name: series_date
+        tests:
+          - not_null

@@ -1,0 +1,38 @@
+version: 2
+
+models:
+  - name: mart_price_history
+    description: "Core analytical price table with rolling 7/30/90-day deltas"
+    columns:
+      - name: item_id
+        tests:
+          - not_null
+      - name: store_id
+        tests:
+          - not_null
+      - name: price_date
+        tests:
+          - not_null
+      - name: regular_price
+        tests:
+          - not_null
+
+  - name: mart_promo_calendar
+    description: "Promo cycle history with predicted next sale dates"
+    columns:
+      - name: item_id
+        tests:
+          - not_null
+      - name: store_id
+        tests:
+          - not_null
+
+  - name: mart_buy_signals
+    description: "ML model output — BUY_NOW / WAIT / NEUTRAL signals per item × store"
+    columns:
+      - name: item_id
+        tests:
+          - not_null
+      - name: signal_date
+        tests:
+          - not_null
